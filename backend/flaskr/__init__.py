@@ -4,6 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
 
+from sqlalchemy import func
+
+
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
@@ -223,13 +226,15 @@ def create_app(test_config=None):
         if previous:
             previous_questions = previous
 
+        # random_question = random.randint()
+
         # if catefory == ALL then => return all questions
         if (category['id'] == 0):
-            question = Question.query.filter(Question.id.notin_(previous_questions)).first()
+            question = Question.query.filter(Question.id.notin_(previous_questions)).order_by(func.random()).first()
         # return questoins for given category
         else:
             question = Question.query.filter(
-                Question.category == category['id'], Question.id.notin_(previous_questions)).first()
+                Question.category == category['id'], Question.id.notin_(previous_questions)).order_by(func.random()).first()
 
         return jsonify({
             "success": True,
